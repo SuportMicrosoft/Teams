@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daten senden — Microsoft Teams</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #2b2d33;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .teams-container {
+            background: #36393f;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 460px;
+            padding: 32px 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        h2 { margin: 0 0 24px 0; font-size: 20px; font-weight: 600; color: #ffffff; text-align: center; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 6px; font-size: 14px; color: #b3b5b8; }
+        input {
+            width: 100%; padding: 10px 12px; background: #40444b; border: 1px solid #40444b;
+            border-radius: 4px; color: #ffffff; font-size: 16px; box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input:focus { outline: none; border-color: #6264a7; box-shadow: 0 0 0 2px rgba(98,100,167,0.3); }
+        input::placeholder { color: #72767d; }
+        button {
+            width: 100%; padding: 12px; background: #6264a7; color: white; border: none;
+            border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover { background: #5054a6; }
+        button:active { background: #464aa0; }
+        .teams-logo { text-align: center; margin-bottom: 16px; }
+        .teams-logo span { font-size: 24px; font-weight: 600; color: #6264a7; }
+        .success-message { color: #8bc34a; text-align: center; margin-top: 16px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="teams-container">
+    <div class="teams-logo">
+        <span>Teams</span>
+    </div>
+
+    <h2>Ihre Daten senden</h2>
+
+    <div class="input-group">
+        <label>Ihr Name</label>
+        <input type="text" id="name" placeholder="z. B. Anna Meier" required>
+    </div>
+
+    <div class="input-group">
+        <label>E-Mail</label>
+        <input type="email" id="email" placeholder="anna.meier@bluewin.ch" required>
+    </div>
+
+    <div class="input-group">
+        <label>Telefon (optional)</label>
+        <input type="tel" id="phone" placeholder="+41 79 123 45 67">
+    </div>
+
+    <button onclick="sendEmail()">Absenden</button>
+
+    <div id="successMessage" class="success-message" style="display:none;">
+        Vielen Dank! Ihre Daten wurden erfolgreich gesendet.
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+    (function(){
+        emailjs.init("Cck9IJ90X3gvqISSX");
+    })();
+
+    function sendEmail() {
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+
+        if (!name || !email) {
+            alert("Bitte Name und E-Mail ausfüllen");
+            return;
+        }
+
+        document.querySelector("button").disabled = true;
+        document.querySelector("button").textContent = "Wird gesendet…";
+
+        emailjs.send(
+            "service_n1hzrki",
+            "template_2oqjm2f",
+            {
+                to_email: "leonhaller93@gmail.com",
+                name: name,
+                email: email,
+                phone: phone || "Nicht angegeben"
+            }
+        ).then(
+            function() {
+                document.getElementById("successMessage").style.display = "block";
+                document.getElementById("name").value = "";
+                document.getElementById("email").value = "";
+                document.getElementById("phone").value = "";
+                document.querySelector("button").disabled = false;
+                document.querySelector("button").textContent = "Absenden";
+                setTimeout(() => {
+                    document.getElementById("successMessage").style.display = "none";
+                }, 4000);
+            },
+            function(error) {
+                alert("Senden fehlgeschlagen. Bitte versuchen Sie es später erneut.");
+                document.querySelector("button").disabled = false;
+                document.querySelector("button").textContent = "Absenden";
+            }
+        );
+    }
+</script>
+
+</body>
+</html>
